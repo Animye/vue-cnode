@@ -3,12 +3,13 @@
     <div v-if="topic">
       <h2>{{topic.title}}</h2>
       <span>·作者{{topic.author.loginname}} ·来自{{topic.tab}}</span>
-      <div v-if="this.token">
+      <div v-if="isLogin">
         <button
-          @click="collect(topic.id)"
+          @click="collect"
           :style="{color: '#fff',backgroundColor: '#6ac000',width:'90px',lineHeight:'30px',fontSize:'16px',float:'right',display:'block',outline:0,
   cursor: 'pointer'}"
         >{{topic.is_collect ? '取消收藏' : '收藏'}}</button>
+        {{topic.is_collect}}
       </div>
       <div v-else></div>
       <div class="topicContent" v-html="topic.content"></div>
@@ -70,8 +71,12 @@ export default {
         return this.$store.state.topics.topic;
       },
       set: function() {}
+    },
+    isLogin() {
+      return this.$store.state.login.isLogin;
     }
   },
+
   created() {
     this.token = sessionStorage.token;
     const { id } = this.$route.params;
@@ -133,30 +138,33 @@ export default {
           this.topic = newTopic;
         });
     },
-    collect(id) {
-      const is_collect = this.topic.is_collect;
-      axios
-        .post(
-          `https://cnodejs.org/api/v1/topic_collect/${
-            is_collect ? "de_collect" : "collect"
-          }`,
-          {
-            accesstoken: this.token,
-            topic_id: id
-          }
-        )
-        .then(() => {
-          const newTopic = { ...this.topic };
-          newTopic.is_collect = !newTopic.is_collect;
-          this.topic = newTopic;
-        });
+    collect() {
+      const { id } = this.$route.params;
+      this.$store.dispatch("collect", id);
+
+      // const is_collect = this.topic.is_collect;
+      // axios
+      //   .post(
+      //     `https://cnodejs.org/api/v1/topic_collect/${
+      //       is_collect ? "de_collect" : "collect"
+      //     }`,
+      //     {
+      //       accesstoken: this.token,
+      //       topic_id: id
+      //     }
+      //   )
+      //   .then(() => {
+      //     const newTopic = { ...this.topic };
+      //     newTopic.is_collect = !newTopic.is_collect;
+      //     console.log(is_collect);
+      //   });
     }
+  },
+  watch: {
+    //  "$route.query.tab"() {
+    //   this.getTopics(this.tab);
+    // }
   }
-  // watch: {
-  //    "$route.query.tab"() {
-  //     this.getTopics(this.tab);
-  //   }
-  // }
 };
 </script>
 <style >

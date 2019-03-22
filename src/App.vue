@@ -1,6 +1,6 @@
 <template>
   <div style="{backgroundColor:' #e1e1e1'}">
-    <Header :isLogin="isLogin"/>
+    <Header/>
     <Main/>
   </div>
 </template>

@@ -14,6 +14,7 @@
         </router-link>
         <span>{{topic.author.loginname}}</span>
       </div>
+
       <div v-else></div>
     </div>
   </div>
@@ -61,10 +62,11 @@ export default {
   },
   methods: {
     getPersonal() {
-      if (this.isLogin) {
+      if (this.$store.state.login.userInfo) {
         const { loginname } = this.$route.params;
         if (!loginname) {
           const personal = this.$store.state.login.userInfo.loginname;
+
           this.$store.dispatch("getUser", personal);
         }
       }

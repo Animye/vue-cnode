@@ -77,13 +77,13 @@ export default {
     // userInfo: null,
     searchValue: ""
   }),
-  props: ["isLogin"],
   created() {
+    const token = this.token;
     if (sessionStorage.loginname && sessionStorage.avatar_url) {
-      this.userInfo = {
-        loginname: sessionStorage.loginname,
-        avatar_url: sessionStorage.avatar_url
-      };
+      this.$store.dispatch("getUserInfo", {
+        token
+      });
+      this.$store.dispatch("isLogin", true);
     }
   },
   computed: {

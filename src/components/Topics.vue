@@ -19,18 +19,26 @@
         <span class="time">{{ $moment(topic.last_reply_at).fromNow()}}</span>
       </li>
     </ul>
+    <el-pagination layout="prev, pager, next" :total="50" @current-change="paging"></el-pagination>
   </div>
   <div v-else>请稍等。。</div>
 </template>
 <script>
 export default {
   name: "topics",
+  data: () => ({
+    num: 1
+  }),
   methods: {
+    paging(e) {
+      this.num = e;
+    },
     getTopics(tab) {
+      const ind = this.num;
       const query = this.isSearch
         ? `title_like=${this.$route.query.query}`
         : `tab=${tab}`;
-      this.$store.dispatch("getTopics", query);
+      this.$store.dispatch("getTopics", { query, ind });
     }
   },
   computed: {
@@ -50,6 +58,9 @@ export default {
   },
   watch: {
     "$route.query.tab"() {
+      this.getTopics(this.tab);
+    },
+    num() {
       this.getTopics(this.tab);
     }
   }
